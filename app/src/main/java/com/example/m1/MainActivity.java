@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -126,6 +127,9 @@ public class MainActivity extends AppCompatActivity implements SymptomAdapter.On
                 idsSelected += symptomModel.getId() + "\n";
             }
         }
+        Intent intent = new Intent(this, SecondActivity.class);
+        intent.putStringArrayListExtra("selectedIds", (ArrayList<String>) selectedSymptoms);
+        startActivity(intent);
         Toast.makeText(this, idsSelected, Toast.LENGTH_SHORT).show();
 
         // Reset selected items
