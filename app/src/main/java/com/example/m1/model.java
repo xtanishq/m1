@@ -5,6 +5,13 @@ public class model {
     String id,title;
 
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
@@ -14,9 +21,10 @@ public class model {
         this.title = title;
     }
 
-    public model(String title) {
+    public model(String title, String id) {
 
         this.title = title;
+        this.id = id;
     }
 }
 

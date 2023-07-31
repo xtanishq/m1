@@ -1,15 +1,19 @@
 package com.example.m1;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -34,9 +38,14 @@ public class MainActivity extends AppCompatActivity implements SymptomAdapter.On
     RecyclerView recyclerView;
     SymptomAdapter adapter;
     Button submit;
+    String id;
+    //    ArrayList<model> modelArrayList = new ArrayList<>();
     List<String> symptomsList;
+//    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+//    SharedPreferences.Editor editor = getSharedPreferences("file", MODE_PRIVATE).edit();
     List<String> selectedSymptoms;
-//
+
+    //
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,9 +56,9 @@ public class MainActivity extends AppCompatActivity implements SymptomAdapter.On
 
         symptomsList = new ArrayList<>();
         selectedSymptoms = new ArrayList<>();
-
+        Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
         // Create the adapter
-        adapter = new SymptomAdapter(symptomsList, this);
+        adapter = new SymptomAdapter(modelArrayList, this);
 
         // Set the adapter to the RecyclerView
         recyclerView.setAdapter(adapter);
@@ -84,13 +93,20 @@ public class MainActivity extends AppCompatActivity implements SymptomAdapter.On
                             JSONArray jsonArray = jsonObject.getJSONArray("list");
 
                             symptomsList.clear(); // Clear the list before adding new data
+
                             for (int i = 0; i < jsonArray.length(); i++) {
 //                                String symptomTitle = jsonArray.getString(i);
                                 JSONObject object = jsonArray.getJSONObject(i);
-                                String symptomTitle = jsonArray.getString(i);
-                                symptomsList.add(symptomTitle);
+                                modelArrayList.add(new model(object.getString("title"),
+                                        object.getString("id")
+                                ));
+                                id = object.getString("id");
+//                                editor.putString("id", id);
+//                                editor.apply();
+                                String symptomTitle = object.getString("title");
+                                symptomsList.add(String.valueOf(modelArrayList));
 
-//                                Log.i(TAG, "Symptom Title: " + symptomTitle);
+
                             }
 
                             // Notify the adapter that data has changed

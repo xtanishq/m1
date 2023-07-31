@@ -1,22 +1,25 @@
 package com.example.m1;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 public class SymptomAdapter extends RecyclerView.Adapter<SymptomAdapter.SymptomViewHolder> {
 
-    private List<String> symptomsList;
+    private List<model> symptomsList;
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {
         void onItemClick(int position, boolean isChecked);
     }
 
-    public SymptomAdapter(List<String> symptomsList, OnItemClickListener listener) {
+    public SymptomAdapter(List<model> symptomsList, OnItemClickListener listener) {
         this.symptomsList = symptomsList;
         this.listener = listener;
     }
@@ -30,8 +33,12 @@ public class SymptomAdapter extends RecyclerView.Adapter<SymptomAdapter.SymptomV
 
     @Override
     public void onBindViewHolder(@NonNull SymptomViewHolder holder, int position) {
-        String symptom = symptomsList.get(position);
-        holder.bind(symptom);
+
+
+        model symptom = symptomsList.get(position);
+//        String symptom = symptomsList.get(position);
+        holder.bind(symptom.title);
+
     }
 
     @Override
@@ -42,6 +49,7 @@ public class SymptomAdapter extends RecyclerView.Adapter<SymptomAdapter.SymptomV
     class SymptomViewHolder extends RecyclerView.ViewHolder {
 
         private CheckBox checkBox;
+
 
         SymptomViewHolder(View itemView) {
             super(itemView);
