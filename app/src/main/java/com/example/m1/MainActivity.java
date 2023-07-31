@@ -5,15 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -38,14 +35,8 @@ public class MainActivity extends AppCompatActivity implements SymptomAdapter.On
     RecyclerView recyclerView;
     SymptomAdapter adapter;
     Button submit;
-    String id;
-    //    ArrayList<model> modelArrayList = new ArrayList<>();
-    List<String> symptomsList;
-//    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-//    SharedPreferences.Editor editor = getSharedPreferences("file", MODE_PRIVATE).edit();
     List<String> selectedSymptoms;
 
-    //
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,9 +45,8 @@ public class MainActivity extends AppCompatActivity implements SymptomAdapter.On
         recyclerView = findViewById(R.id.recycler_view);
         submit = findViewById(R.id.btn_submit);
 
-        symptomsList = new ArrayList<>();
         selectedSymptoms = new ArrayList<>();
-        Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
+
         // Create the adapter
         adapter = new SymptomAdapter(modelArrayList, this);
 
@@ -92,21 +82,12 @@ public class MainActivity extends AppCompatActivity implements SymptomAdapter.On
                             JSONObject jsonObject = new JSONObject(response);
                             JSONArray jsonArray = jsonObject.getJSONArray("list");
 
-                            symptomsList.clear(); // Clear the list before adding new data
+                            modelArrayList.clear(); // Clear the list before adding new data
 
                             for (int i = 0; i < jsonArray.length(); i++) {
-//                                String symptomTitle = jsonArray.getString(i);
                                 JSONObject object = jsonArray.getJSONObject(i);
                                 modelArrayList.add(new model(object.getString("title"),
-                                        object.getString("id")
-                                ));
-                                id = object.getString("id");
-//                                editor.putString("id", id);
-//                                editor.apply();
-                                String symptomTitle = object.getString("title");
-                                symptomsList.add(String.valueOf(modelArrayList));
-
-
+                                        object.getString("id")));
                             }
 
                             // Notify the adapter that data has changed
@@ -138,11 +119,14 @@ public class MainActivity extends AppCompatActivity implements SymptomAdapter.On
     }
 
     private void onSubmitClicked() {
-        String itemSelected = "Selected items:\n";
+        String idsSelected = "Selected IDs:\n";
         for (String symptom : selectedSymptoms) {
-            itemSelected += symptom + "\n";
+            model symptomModel = findSymptomById(symptom);
+            if (symptomModel != null) {
+                idsSelected += symptomModel.getId() + "\n";
+            }
         }
-        Toast.makeText(this, itemSelected, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, idsSelected, Toast.LENGTH_SHORT).show();
 
         // Reset selected items
         selectedSymptoms.clear();
@@ -150,13 +134,22 @@ public class MainActivity extends AppCompatActivity implements SymptomAdapter.On
         updateButtonState();
     }
 
+    private model findSymptomById(String symptomId) {
+        for (model symptom : modelArrayList) {
+            if (symptom.getId().equals(symptomId)) {
+                return symptom;
+            }
+        }
+        return null; // Return null if the symptom with the given ID is not found
+    }
+
     @Override
     public void onItemClick(int position, boolean isChecked) {
-        String symptom = symptomsList.get(position);
+        model symptom = modelArrayList.get(position);
         if (isChecked) {
-            selectedSymptoms.add(symptom);
+            selectedSymptoms.add(symptom.getId());
         } else {
-            selectedSymptoms.remove(symptom);
+            selectedSymptoms.remove(symptom.getId());
         }
         updateButtonState();
     }
